@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>연락처</title>
+</head>
+<body>
+<h1>연락처등록폼</h1>
+
+<form action ='add' method ='POST'>
+<table border='1'>
+
+<tr><th>아이디</th><td><input name='userId' type='text' placeholder='bbb' ></td></tr>
+<tr><th>암호</th><td><input name='password' type='password'></td></tr>
+<tr><th>이름</th><td><input name='name' type='text' placeholder='홍길동2'></td></tr>
+<tr><th>이메일</th><td><input name='email' type='text' placeholder='hong2@test.com'></td></tr>
+<tr><th>전화</th><td><input name='tel' type='text' placeholder='null'></td></tr>
+<tr><th>재직여부</th><td><input type='radio' name='working' placeholder='y' >재직중 <input type='radio' name='working' value='n' checked>실업/미취업</td></tr>
+<tr><th>태어난해</th><td><input name='birthYear' type='number' placeholder='예>2000'></td></tr>
+<tr><th>최종학교</th><td><input name='school' type='text' placeholder='예>비트대학'></td></tr>
+
+</table>
+<button type='submit'>등록</button>
+<a href='list'>목록</a>
+</form>
+
+</body>
+</html>

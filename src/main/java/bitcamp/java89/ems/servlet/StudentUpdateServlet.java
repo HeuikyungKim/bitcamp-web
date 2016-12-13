@@ -4,55 +4,65 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import bitcamp.java89.ems.dao.impl.StudentMysqlDao;
 import bitcamp.java89.ems.vo.Student;
 
-// 톰캣 서버가 실행할 수 있는 클래스는 반드시 Servlet 규격에 맞추어 제작해야 한다.
-// 그러나 Servlet 인터페이스의 메서드가 많아서 구현하기 번거롭다.
-// 그래서 AbstractServlet이라는 추상 클래스를 만들어서,
-// 이 클래스를 상속 받아 간접적으로 Servlet인터페이스를 구현하는 방식을 취한다.
-// 이 클래스를 상속받게 되면 오직 service() 메서드만 만들면 되기 때문에 코드가 편리하다.
 @WebServlet("/student/update")
-public class StudentUpdateServlet extends AbstractServlet {
+public class StudentUpdateServlet extends HttpServlet {
+  private static final long serialVersionUID = 1L;
+  
   @Override
-  public void service(ServletRequest request, ServletResponse response) 
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
+
+    request.setCharacterEncoding("UTF-8");
+    
+    Student student = new Student();
+    student.setUserId(request.getParameter("userId"));
+    student.setPassword(request.getParameter("password"));
+    student.setName(request.getParameter("name"));
+    student.setTel(request.getParameter("tel"));
+    student.setEmail(request.getParameter("email"));
+    student.setWorking(Boolean.parseBoolean(request.getParameter("working")));
+    student.setBirthYear(Integer.parseInt(request.getParameter("birthYear")));
+    student.setSchool(request.getParameter("school"));
+    
+    response.setHeader("Refresh", "1;url=list");
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>학생관리-변경</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>학생 결과</h1>");
+    
     try {
       StudentMysqlDao studentDao = StudentMysqlDao.getInstance();
-    
-      // 웹브라우저 쪽으로 출력할 수 있도록 출력 스트림 객체를 얻는다.
-      response.setContentType("text/plain;charset=UTF-8");
-      PrintWriter out = response.getWriter();
       
       if (!studentDao.existUserId(request.getParameter("userId"))) {
-        out.println("해당 아이디의 학생이 없습니다.");
-        return;
+        throw new Exception("사용자를 찾지 못했습니다.");
       }
       
-      Student student = new Student();
-      student.setUserId(request.getParameter("userId"));
-      student.setPassword(request.getParameter("password"));
-      student.setName(request.getParameter("name"));
-      student.setTel(request.getParameter("tel"));
-      student.setEmail(request.getParameter("email"));
-      student.setWorking(Boolean.parseBoolean(request.getParameter("working")));
-      student.setBirthYear(Integer.parseInt(request.getParameter("birthYear")));
-      student.setSchool(request.getParameter("school"));
-      
       studentDao.update(student);
-      out.println("학생 정보를 변경하였습니다.");
+      out.println("<p>변경 하였습니다.</p>");
       
     } catch (Exception e) {
-      throw new ServletException(e);
+      out.printf("<p>%s</p>\n", e.getMessage());
     }
     
+    out.println("</body>");
+    out.println("</html>");
   }
 }
-
 
 
 
